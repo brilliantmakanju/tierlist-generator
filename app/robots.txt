@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /login/
+Disallow: /profile/
+Allow: /
+
+Sitemap: https://tiergods.jolexhive.com/sitemap.xml

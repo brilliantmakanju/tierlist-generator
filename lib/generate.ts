@@ -231,6 +231,21 @@ export async function generateAIContent(formData: FormData): Promise<{ success: 
     // Extract response content
     const responseContent = response.choices[0]?.message?.content || '';
     console.log("AI Response:", responseContent);
+    
+    // Clear all existing AI result data in localStorage at the beginning
+    // This needs to be done on the client side, so we'll include browser-only code
+    // if (typeof window !== 'undefined') {
+    //   // Get all localStorage keys
+    //   const keys = Object.keys(localStorage);
+      
+    //   // Delete all keys that start with 'ai_result_'
+    //   const aiResultKeys = keys.filter(key => key.startsWith('ai_result_'));
+    //   aiResultKeys.forEach(key => {
+    //     localStorage.removeItem(key);
+    //   });
+      
+    //   console.log(`Deleted ${aiResultKeys.length} existing AI result items from localStorage`);
+    // }
 
     // Try to parse JSON from the response
     let parsedResponse: any;
@@ -252,38 +267,18 @@ export async function generateAIContent(formData: FormData): Promise<{ success: 
       parsedResponse = { rawContent: responseContent };
     }
 
-
-    // Get the cookie store and delete existing cookies starting with 'ai_result_'
-    const cookieStore = await cookies();
-    const resultCookies = cookieStore.getAll().filter(cookie =>
-      cookie.name.startsWith('ai_result_')
-    );
-
-    // Delete existing cookies
-    for (const cookie of resultCookies) {
-      await (await cookies()).delete(cookie.name);
-    }
-
     // Create a unique session ID for this result
     const resultId = uuidv4();
 
-    // Store result in a secure HTTP-only cookie
+    // Prepare the result data
     const resultData: AIResponse = {
       content: typeof parsedResponse === 'object' ? JSON.stringify(parsedResponse) : responseContent
     };
 
-
-    // Save to server-side state using cookies
-    (await
-      // Save to server-side state using cookies
-      cookies()).set({
-        name: `ai_result_${resultId}`,
-        value: JSON.stringify(resultData),
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 30, // 30 minutes
-        path: '/',
-      });
+    // // Store result in localStorage (needs to be done on client side)
+    // if (typeof window !== 'undefined') {
+    //   localStorage.setItem(`ai_result_${resultId}`, JSON.stringify(resultData));
+    // }
 
     return {
       success: true,
@@ -297,3 +292,100 @@ export async function generateAIContent(formData: FormData): Promise<{ success: 
     };
   }
 }
+
+// export async function generateAIContent(formData: FormData): Promise<{ success: boolean; data?: AIResponse; error?: string }> {
+//   try {
+//     // Validate form data
+//     const validatedData = formSchema.parse(formData);
+
+//     // Format the prompt using the validated data
+//     const formattedPrompt = formatPrompt(validatedData);
+
+//     // Initialize Together AI client
+//     const together = new Together(); // auth defaults to process.env.TOGETHER_API_KEY
+
+//     // Call the Together AI API
+//     const response = await together.chat.completions.create({
+//       messages: [{ "role": "user", "content": formattedPrompt }],
+//       model: "meta-llama/Llama-3.3-70B-Instruct-Turbo"
+//     });
+
+//     // Extract response content
+//     const responseContent = response.choices[0]?.message?.content || '';
+//     console.log("AI Response:", responseContent);
+//     // Get the cookie store and delete existing cookies starting with 'ai_result_'
+//     const cookieStore = await cookies();
+//     const resultCookies = cookieStore.getAll().filter(cookie =>
+//       cookie.name.startsWith('ai_result_')
+//     );
+
+
+//     // Delete existing cookies if they exist
+//     if (resultCookies.length > 0) {
+//       for (const cookie of resultCookies) {
+//         await cookieStore.delete(cookie.name);
+//       }
+//       console.log(`Deleted ${resultCookies.length} existing AI result cookies`);
+//     }
+    
+
+//     // Try to parse JSON from the response
+//     let parsedResponse: any;
+//     try {
+//       // Only attempt to parse if the response looks like JSON
+//       if (responseContent.trim().startsWith('{') || responseContent.trim().startsWith('[')) {
+//         parsedResponse = JSON.parse(responseContent);
+//       } else {
+//         // Try to find JSON within the response using regex
+//         const jsonMatch = responseContent.match(/\{[\s\S]*\}/);
+//         if (jsonMatch) {
+//           parsedResponse = JSON.parse(jsonMatch[0]);
+//         } else {
+//           parsedResponse = { rawContent: responseContent };
+//         }
+//       }
+//     } catch (e) {
+//       console.error("Failed to parse JSON from response:", e);
+//       parsedResponse = { rawContent: responseContent };
+//     }
+
+
+
+//     // // Delete existing cookies
+//     // for (const cookie of resultCookies) {
+//     //   await (await cookies()).delete(cookie.name);
+//     // }
+
+//     // Create a unique session ID for this result
+//     const resultId = uuidv4();
+
+//     // Store result in a secure HTTP-only cookie
+//     const resultData: AIResponse = {
+//       content: typeof parsedResponse === 'object' ? JSON.stringify(parsedResponse) : responseContent
+//     };
+
+
+//     // Save to server-side state using cookies
+//     (await
+//       // Save to server-side state using cookies
+//       cookies()).set({
+//         name: `ai_result_${resultId}`,
+//         value: JSON.stringify(resultData),
+//         httpOnly: true,
+//         secure: process.env.NODE_ENV === 'production',
+//         maxAge: 60 * 30, // 30 minutes
+//         path: '/',
+//       });
+
+//     return {
+//       success: true,
+//       data: resultData
+//     };
+//   } catch (error) {
+//     console.error('Error generating AI content:', error);
+//     return {
+//       success: false,
+//       error: error instanceof Error ? error.message : 'An unknown error occurred'
+//     };
+//   }
+// }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
@@ -10,6 +10,7 @@ import StepThree from "@/components/create/step-three"
 import StepFour from "@/components/create/step-four"
 import { useRouter } from "next/navigation"
 import { generateAIContent } from "@/lib/generate"
+import { Loader } from "lucide-react"
 
 export type FormData = {
   topic: string;
@@ -57,15 +58,20 @@ export default function CreatePage() {
     // }, 2000)
     // setIsLoading(true);
     // // setError(null);
-    
+
     try {
       console.log("Submitting form data:", formData);
       const result = await generateAIContent(formData);
-      
+
       if (result.success) {
+        try {
+          localStorage.setItem("TierList", JSON.stringify(result.data))
+          router.push(`/results?generated=true`);
+        } catch (error) {
+          // Silently fail
+        }
         // Navigate to results page with a query param
         // The actual data is stored securely in an HTTP-only cookie
-        router.push(`/results?generated=true`);
       } else {
         // setError(result.error || 'Failed to generate content');
         setIsLoading(false);
@@ -80,6 +86,28 @@ export default function CreatePage() {
 
   }
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Get all localStorage keys
+      const keys = Object.keys(localStorage);
+
+      // Delete all keys that start with 'ai_result_'
+      const aiResultKeys = keys.filter(key => key.startsWith('TierList'));
+      aiResultKeys.forEach(key => {
+        localStorage.removeItem(key);
+      });
+
+
+      const previousTierList = keys.filter(key => key.startsWith('previousTierList'));
+      previousTierList.forEach(key => {
+        localStorage.removeItem(key);
+      });
+
+
+      console.log(`Deleted ${aiResultKeys.length} existing AI result items from localStorage`);
+    }
+  }, [])
+
   return (
     <div className="flex flex-col min-h-screen bg-[#f8f9fa] dark:bg-gray-950">
       <Header />
@@ -91,13 +119,12 @@ export default function CreatePage() {
               {[1, 2, 3, 4].map((step) => (
                 <div key={step} className="flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      step === currentStep
-                        ? "bg-[#3b82f6] text-white"
-                        : step < currentStep
-                          ? "bg-green-500 text-white"
-                          : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
-                    }`}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center ${step === currentStep
+                      ? "bg-[#3b82f6] text-white"
+                      : step < currentStep
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                      }`}
                   >
                     {step < currentStep ? "✓" : step}
                   </div>
@@ -127,6 +154,7 @@ export default function CreatePage() {
             <Button onClick={handleNext}>Next</Button>
           ) : (
             <Button onClick={handleGenerate} disabled={isLoading} className="bg-[#3b82f6] hover:bg-[#2563eb]">
+              {isLoading ? <Loader className=" animate-spin text-white " /> : <></>}
               {isLoading ? "Consulting the Tier Gods..." : "Generate Tier List"}
             </Button>
           )}

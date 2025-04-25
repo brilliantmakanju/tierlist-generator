@@ -273,7 +273,7 @@
 
 //       // Add watermark
 //       const watermarkElement = document.createElement("div")
-//       watermarkElement.textContent = "TierGenius"
+//       watermarkElement.textContent = "Tier Gods"
 //       watermarkElement.style.position = "absolute"
 //       watermarkElement.style.bottom = "20px"
 //       watermarkElement.style.right = "20px"
@@ -1004,7 +1004,7 @@
 
 //       // Add watermark
 //       const watermarkElement = document.createElement("div")
-//       watermarkElement.textContent = "TierGenius"
+//       watermarkElement.textContent = "Tier Gods"
 //       watermarkElement.style.position = "absolute"
 //       watermarkElement.style.bottom = "20px"
 //       watermarkElement.style.right = "20px"
@@ -1743,7 +1743,7 @@
 
 //       // Add watermark
 //       const watermarkElement = document.createElement("div")
-//       watermarkElement.textContent = "TierGenius"
+//       watermarkElement.textContent = "Tier Gods"
 //       watermarkElement.style.position = "absolute"
 //       watermarkElement.style.bottom = "20px"
 //       watermarkElement.style.right = "20px"
@@ -2523,7 +2523,7 @@
 
 //       // Add watermark
 //       const watermarkElement = document.createElement("div")
-//       watermarkElement.textContent = "TierGenius"
+//       watermarkElement.textContent = "Tier Gods"
 //       watermarkElement.style.position = "absolute"
 //       watermarkElement.style.bottom = "20px"
 //       watermarkElement.style.right = "20px"
@@ -3272,7 +3272,7 @@
 
 //       // Add watermark
 //       const watermarkElement = document.createElement("div")
-//       watermarkElement.textContent = "TierGenius"
+//       watermarkElement.textContent = "Tier Gods"
 //       watermarkElement.style.position = "absolute"
 //       watermarkElement.style.bottom = "20px"
 //       watermarkElement.style.right = "20px"
@@ -4041,7 +4041,7 @@
 
 //       // Add watermark
 //       const watermarkElement = document.createElement("div")
-//       watermarkElement.textContent = "TierGenius"
+//       watermarkElement.textContent = "Tier Gods"
 //       watermarkElement.style.position = "absolute"
 //       watermarkElement.style.bottom = "20px"
 //       watermarkElement.style.right = "20px"
@@ -4681,7 +4681,7 @@
 
 //       // Add watermark
 //       const watermarkElement = document.createElement("div")
-//       watermarkElement.textContent = "TierGenius"
+//       watermarkElement.textContent = "Tier Gods"
 //       watermarkElement.style.position = "absolute"
 //       watermarkElement.style.bottom = "20px"
 //       watermarkElement.style.right = "20px"
